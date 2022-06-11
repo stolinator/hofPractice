@@ -22,7 +22,13 @@ var moreFruits = function(fruits) {
 // use _.each to traverse the number array and determine
 // which are multiples of five.
 var multiplesOfFive = function(numbers) {
-
+  var count = 0;
+  _.each(numbers, function(x) {
+    if ( x % 5 === 0 ) {
+      count += 1;
+    }
+  });
+  return count;
 };
 
 /*
@@ -33,18 +39,18 @@ var multiplesOfFive = function(numbers) {
 
 // use _.filter to return the fruits array with only the desired fruit.
 var onlyOneFruit = function(fruits, targetFruit) {
-
+  return _.filter(fruits, x => (x === targetFruit));
 };
 
 // use _.filter to return the fruits array with only fruits
 // starting with the letter 'P'.
 var startsWith = function(fruits, letter) {
-
+  return _.filter(fruits, x => x.startsWith(letter));
 };
 
 // return a filtered array containing only cookie-type desserts.
 var cookiesOnly = function(desserts) {
-
+  return _.filter(desserts, x => (x.type === 'cookie'));
 };
 
 /*
@@ -56,18 +62,36 @@ var cookiesOnly = function(desserts) {
 // return the total price of all products.
 var sumTotal = function(products) {
   
+  return _.reduce(products, function(total, current) {
+    var price = parseFloat(current.price.replace('$', ''));
+    return price + total;
+  }, 0);
 };
 
 // return an object consisting of dessert types and how many of each.
 // exampleOutput: { dessertType: 3, dessertType2: 1 }
 var dessertCategories = function(desserts) {
-
+  var types = {};
+  return _.reduce(desserts, function(types, dessert) {
+    if (dessert.type in types) {
+      types[ dessert.type ] += 1;
+    } else {
+      types[ dessert.type ] = 1;
+    }
+    return types;
+  }, types);
 };
 
 // given an array of movie data objects,return an array containing
 // movies that came out between 1990 and 2000.
 // TIP: use an array as your accumulator - don't push to an external array!
 var ninetiesKid = function(movies) {
+  return _.reduce(movies, function(results, movie) {
+    if ( 1990 <= movie.releaseYear && movie.releaseYear <= 2000 ) {
+      results.push(movie.title);
+    }
+    return results;
+  }, results = []);
   
 };
 
@@ -75,7 +99,13 @@ var ninetiesKid = function(movies) {
 // runtime than your time limit.
 // timeLimit is an integer representing a number of minutes.
 var movieNight = function(movies, timeLimit) {
-
+  return _.reduce(movies, function(result, movie, index) {
+    if ( movie.runtime < timeLimit ) {
+      return true;
+    } else {
+      return result;
+    }
+  }, false);
 };
 
 /*
@@ -87,14 +117,17 @@ var movieNight = function(movies, timeLimit) {
 // given an array of strings, use _.map to return a new array containing all
 // strings converted to uppercase letters.
 var upperCaseFruits = function(fruits) {
-
+  _.map(fruits, fruit => fruit.toUpperCase());
 };
 
 // given an array of dessert objects, return a new array of objects
 // that have a new "glutenFree" property, with a boolean value.
 // TIP: Items that contain flour are not gluten-free.
 var glutenFree = function(desserts) {
-
+  return _.map(desserts, function(dessert) {
+    dessert['glutenFree'] = (dessert.ingredients.indexOf('flour') === -1);
+    return dessert;
+  });
 };
 
 // use _.map to return an array of items with their sale prices, with a new property
@@ -118,5 +151,9 @@ var glutenFree = function(desserts) {
 
 */
 var applyCoupon = function(groceries, coupon) {
-
+  return _.map(groceries, function(item) {
+    var price = parseFloat( item.price.replace('$', '') );
+    item['salePrice'] = '$' + (price - (price * coupon)).toFixed(2);
+    return item;
+  });
 };
